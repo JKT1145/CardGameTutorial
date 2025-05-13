@@ -76,7 +76,29 @@ public class BattleManager : MonoSingleton<BattleManager>
     // 每帧调用一次的方法，可用于处理需要实时更新的逻辑
     void Update()
     {
+        // 检测鼠标右键点击
+        if (Input.GetMouseButtonDown(1))
+        {
+            CancelSummonOrAttack();
+        }
+    }
 
+    private void CancelSummonOrAttack()
+    {
+        if (arrow != null)
+        {
+            Destroy(arrow);
+        }
+        waitingMonster = null;
+        attackingMonster = null;
+        foreach (var block in playerBlocks)
+        {
+            block.GetComponent<CardBlock>().CloseAll();
+        }
+        foreach (var block in enemyBlocks)
+        {
+            block.GetComponent<CardBlock>().CloseAll();
+        }
     }
 
     // 玩家抽卡方法，只有在玩家抽卡阶段才能调用
@@ -171,7 +193,7 @@ public class BattleManager : MonoSingleton<BattleManager>
         // 如果有箭头对象，销毁它
         if (arrow != null)
         {
-            Destroy(arrow);
+            CancelSummonOrAttack();
         }
         if (currentPhase == GamePhase.playerAction)
         {
